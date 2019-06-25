@@ -27,14 +27,27 @@
             <Setter Property="Margin" Value="10,5,0,0"/>
         </Style>
 
-        <Style TargetType="StackPanel" x:Key="Screen">
+        <Style TargetType="StackPanel" x:Key="Screen1">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Width" Value="800"/>
             <Setter Property="Height" Value="300"/>
             <Setter Property="Margin" Value="-1050,20,0,0"/>
         </Style>
 
+        <Style TargetType="StackPanel" x:Key="Screen2">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Width" Value="800"/>
+            <Setter Property="Height" Value="300"/>
+            <Setter Property="Margin" Value="650,-300,0,0"/>
+        </Style>
+
         <Style TargetType="TextBlock" x:Key="ScreenText">
+            <Setter Property="Width" Value="800"/>
+            <Setter Property="Height" Value="300"/>
+            <Setter Property="FontSize" Value="40"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="LoggedCharacters">
             <Setter Property="Width" Value="800"/>
             <Setter Property="Height" Value="300"/>
             <Setter Property="FontSize" Value="40"/>
@@ -44,161 +57,164 @@
     <Grid>
         <StackPanel x:Name="Window" Background="LightGray">
 
-            <StackPanel x:Name="Screen" Style="{StaticResource Screen}">
+            <StackPanel x:Name="Screen1" Style="{StaticResource Screen1}">
                 <TextBlock x:Name="ScreenText" Style="{StaticResource ScreenText}"/>
+            </StackPanel>
 
+            <StackPanel x:Name="Screen2" Style="{StaticResource Screen2}">
+                <TextBlock x:Name="ScreenLoggedCharacters" Style="{StaticResource ScreenText}"/>
             </StackPanel>
 
             <StackPanel x:Name="KeyPad" Background="LightGray" Width="1000" Height="600"
                        Margin="10,100,0,0" HorizontalAlignment="Left">
 
                 <StackPanel x:Name="FirstRow" Style ="{StaticResource ButtonRow}">
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="x²"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="xʸ"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="sin"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="cos"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="tan"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="CE"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="ResetParams">
                         <TextBlock Text="C"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
-                        <TextBlock Text="X"></TextBlock>
+                    <Button>
+                        <TextBlock Text="Del"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="÷"></TextBlock>
                     </Button>
 
                 </StackPanel>
 
                 <StackPanel x:Name="SecondRow" Style ="{StaticResource ButtonRow}">
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="x³"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="y√x"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="sin⁻¹"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="cos⁻¹"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="tan⁻¹"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="7"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="8"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="9"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="X"></TextBlock>
                     </Button>
                 </StackPanel>
 
                 <StackPanel x:Name="ThirdRow" Style ="{StaticResource ButtonRow}">
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="√"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="10^x"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="log"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="Exp"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="Mod"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="4"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="5"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="6"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="-"></TextBlock>
                     </Button>
                 </StackPanel>
 
                 <StackPanel x:Name="FourthRow" Style ="{StaticResource ButtonRow}">
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="1/x"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="eˣ"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="ln"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="dms"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="deg"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="1"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="2"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="3"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="+"></TextBlock>
                     </Button>
                 </StackPanel>
 
                 <StackPanel x:Name="FifthRow" Style ="{StaticResource ButtonRow}">
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="↑"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="π"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="n!"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="("></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text=")"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="±"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="0"></TextBlock>
                     </Button>
-                    <Button Click="DisplayCharacter">
+                    <Button Click="HandleCharacter">
                         <TextBlock Text="."></TextBlock>
                     </Button>
-                    <Button Click="LogCharacters">
+                    <Button Click="RunCalculations">
                         <TextBlock Text="="></TextBlock>
                     </Button>
                 </StackPanel>

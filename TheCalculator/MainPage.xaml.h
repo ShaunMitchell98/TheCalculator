@@ -6,19 +6,26 @@
 #pragma once
 
 #include "MainPage.g.h"
+#include "CharacterParser.h"
+#include "HandleDigitParams.h"
 
 namespace TheCalculator
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
+
 	public ref class MainPage sealed
 	{
 	public:
 		MainPage();
+		void HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void LogCharacters();
 
 	private:
-		void DisplayCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void LogCharacters(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		Platform::String^ LoggedCharacters;
+		void RunCalculations(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		HandleDigitParams params;
+		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }
