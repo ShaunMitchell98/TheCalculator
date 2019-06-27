@@ -2,11 +2,13 @@
 // MainPage.xaml.cpp
 // Implementation of the MainPage class.
 //
+#define _USE_MATH_DEFINES
 
 #include "pch.h"
 #include "MainPage.xaml.h"
 #include "CharacterParser.h"
 #include <iostream>
+#include <cmath>
 
 using namespace TheCalculator;
 
@@ -28,8 +30,6 @@ MainPage::MainPage()
 	InitializeComponent();
 }
 
-Platform::String^ LoggedCharacters = "";
-
 
 
 void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
@@ -40,69 +40,119 @@ void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::Rout
 	
 	CharacterParser parser; // The parser handles the clicked text.
     parser.DisplayCharacter(ClickedText, ScreenText);
-	LoggedCharacters = parser.LogCharacter(ClickedText, LoggedCharacters);
 
 	//If the user clicks a number the parser converts the number clicked
 	//into an internally stored number it can use for arithmetic.
 	if (parser.IsInt(ClickedText)) {
       params = parser.HandleDigit(ClickedText, params);
 	}
-	if (parser.IsOperator(ClickedText) && params.NumberOfDigits != 0) 
+	if (parser.IsBinaryOperator(ClickedText) && params.NumberOfDigits != 0) 
 	{
 			params = parser.TerminateNumber(params);
-			params = parser.HandleOperator(params, ClickedText);
+			params = parser.HandleBinaryOperator(params, ClickedText);
+	}
+	if (parser.IsUnaryOperator(ClickedText)) 
+	{
+		params = parser.HandleUnaryOperator(params, ClickedText);
+	}
+	if (ClickedText == ")") {
+		params = parser.TerminateNumber(params);
+	}
+	if (ClickedText == "π") {
+		params.Numbers[params.NumberCount] = M_PI;
+		params.NumberCount++;
 	}
 }
 
-void MainPage::LogCharacters() {
 
-	//Find a way to delete me.
-}
-
-
-
-
-
-
-void TheCalculator::MainPage::RunCalculations(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+double TheCalculator::MainPage::RunCalculations()
 {
 	CharacterParser parser;
-	int result = 0;
+	double result = 0.0;
 	if (params.CurrentNumber != 0) {
 		params = parser.TerminateNumber(params);
 	}
 	
-
-	for (int i = 0; i < (sizeof(params.Operators)/sizeof(*params.Operators)); i++) {
-		if (params.Operators[i] == "+") {
+	if (params.NumberCount = 1) {
+		result = params.Numbers[0];
+	}
+	for (int i = 0; i < (sizeof(params.BinaryOperators)/sizeof(*params.BinaryOperators)); i++) {
+		if (params.BinaryOperators[i] == "+") {
 			result = params.Numbers[i] + params.Numbers[i + 1];
+			params.Numbers[i] = 0;
+			params.Numbers[i + 1] = result;
         }
-		if (params.Operators[i] == "-") {
+		if (params.BinaryOperators[i] == "-") {
 			result = params.Numbers[i] - params.Numbers[i + 1];
+			params.Numbers[i] = 0;
+			params.Numbers[i + 1] = result;
 		}
-		if (params.Operators[i] == "X") {
+		if (params.BinaryOperators[i] == "X") {
 			result = params.Numbers[i] * params.Numbers[i + 1];
+			params.Numbers[i] = 0;
+			params.Numbers[i + 1] = result;
 		}
-		if (params.Operators[i] == "÷") {
+		if (params.BinaryOperators[i] == "÷") {
 			result = params.Numbers[i] / params.Numbers[i + 1];
+			params.Numbers[i] = 0;
+			params.Numbers[i + 1] = result;
 		}
 	}
-	ScreenText->Text = result.ToString();
+
+	for (int i = 0; i < (sizeof(params.UnaryOperators) / sizeof(*params.UnaryOperators)); i++) {
+		if (params.UnaryOperators[i] == "sin") {
+			result = sin(params.Numbers[i]);
+		}
+		if (params.UnaryOperators[i] == "cos") {
+			result = cos(params.Numbers[i]);
+		}
+		if (params.UnaryOperators[i] == "tan") {
+			result = tan(params.Numbers[i]);
+		}
+	}
+	return result;
 }
 
+//This function resets HandleDigitParams and the ScreenText. It is called when
+//the user clicks C.
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	params.CurrentNumber = 0;
 	params.NumberOfDigits = 0;
-	for (int i = 0; i < (sizeof(params.Operators)/sizeof(*params.Operators)); i++) {
-		if (params.Operators[i] != "") {
-		params.Operators[i] = "";
-		}
+
+	//Reset the BinaryOperators array.
+	for (int i = 0; i < (sizeof(params.BinaryOperators)/sizeof(*params.BinaryOperators)); i++) {
+		params.BinaryOperators[i] = "D";
 	}
+
+	//Reset the numbers array.
 	for (int j = 0; j < sizeof(params.Numbers); j++) {
 		params.Numbers[j] = 0;
 	}
-	params.OperatorCount = 0;
+
+	//Reset the UnaryOperators array.
+	for (int k = 0; k < (sizeof(params.UnaryOperators) / sizeof(*params.UnaryOperators)); k++) {
+		params.UnaryOperators[k] = "D";
+	}
+
+	//Reset parameters tracking numbers and operators.
+	params.BinaryOperatorCount = 0;
 	params.NumberCount = 0;
+	params.UnaryOperatorCount = 0;
 	ScreenText->Text = "";
+}
+
+
+void TheCalculator::MainPage::HandleExponential(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	double result = this->RunCalculations();
+	result = pow(M_E, result);
+	ScreenText->Text = result.ToString();
+}
+
+
+void TheCalculator::MainPage::DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	float result = this->RunCalculations();
+	ScreenText->Text = result.ToString();
 }

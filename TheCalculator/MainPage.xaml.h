@@ -20,12 +20,12 @@ namespace TheCalculator
 	public:
 		MainPage();
 		void HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void LogCharacters();
 
 	private:
-		Platform::String^ LoggedCharacters;
-		void RunCalculations(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		double RunCalculations();
 		HandleDigitParams params;
 		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void HandleExponential(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

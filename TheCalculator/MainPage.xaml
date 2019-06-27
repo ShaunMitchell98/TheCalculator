@@ -163,7 +163,7 @@
                     <Button Click="HandleCharacter">
                         <TextBlock Text="1/x"></TextBlock>
                     </Button>
-                    <Button Click="HandleCharacter">
+                    <Button Click="HandleExponential">
                         <TextBlock Text="eˣ"></TextBlock>
                     </Button>
                     <Button Click="HandleCharacter">
@@ -214,7 +214,7 @@
                     <Button Click="HandleCharacter">
                         <TextBlock Text="."></TextBlock>
                     </Button>
-                    <Button Click="RunCalculations">
+                    <Button Click="DisplayResult">
                         <TextBlock Text="="></TextBlock>
                     </Button>
                 </StackPanel>
