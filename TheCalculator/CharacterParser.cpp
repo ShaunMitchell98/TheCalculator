@@ -20,25 +20,15 @@ CharacterParser::CharacterParser() {
 
 void CharacterParser::DisplayCharacter(String^ ClickedText, TextBlock^ ScreenText) {
 	
-	ScreenText->Text = ScreenText->Text + ClickedText;
-
-}
-
-
-TextBlock^ CharacterParser::DisplayLoggedCharacters(String^ LoggedCharacters, TextBlock^ ScreenLoggedCharacters) {
-	ScreenLoggedCharacters->Text = LoggedCharacters;
-	return ScreenLoggedCharacters;
-}
-
-String^ CharacterParser::LogCharacter(String^ ClickedText, String^ LoggedText) {
-	if (LoggedText == "") {
-		LoggedText = ClickedText;
+	if (this->IsUnaryOperator(ClickedText)) {
+		ScreenText->Text = ScreenText->Text + ClickedText + "(";
+	}
+	if (ScreenText->Text == "0") {
+		ScreenText->Text = ClickedText;
 	}
 	else {
-		LoggedText = LoggedText + ClickedText;
+		ScreenText->Text = ScreenText->Text + ClickedText;
 	}
-
-	return LoggedText;
 }
 
 bool CharacterParser::IsInt(String^ character) {
@@ -54,25 +44,35 @@ bool CharacterParser::IsInt(String^ character) {
 }
 
 //This function checks whether the button clicked is an operator.
-bool CharacterParser::IsOperator(String^ character) {
-	bool IsOperator;
+bool CharacterParser::IsBinaryOperator(String^ character) {
+	bool IsBinaryOperator;
 	if (character == "+" || character == "-" || character == "X" ||
 		character == "÷") {
-		IsOperator = true;
+		IsBinaryOperator = true;
 	}
 	else {
-		IsOperator = false;
+		IsBinaryOperator = false;
 	}
-	return IsOperator;
+	return IsBinaryOperator;
 }
 
+bool CharacterParser::IsUnaryOperator(String^ character) {
+	bool IsUnaryOperator;
+	if (character == "sin" || character == "cos" || character == "tan") {
+		IsUnaryOperator = true;
+	}
+	else {
+		IsUnaryOperator = false;
+	}
+	return IsUnaryOperator;
+}
 
 int CharacterParser::RefStringToInt(String^ theString) {
 	return _wtoi(theString->Data());
 }
 
 
-HandleDigitParams CharacterParser::HandleDigit(String^ Digit, HandleDigitParams params) {
+CalculatorParams CharacterParser::HandleDigit(String^ Digit, CalculatorParams params) {
 	//If the button clicked is a number, this section adds the number to the current number.
 	
 	int CurrentNumber = params.CurrentNumber;
@@ -94,7 +94,7 @@ HandleDigitParams CharacterParser::HandleDigit(String^ Digit, HandleDigitParams 
 	return params;
 }
 
-HandleDigitParams CharacterParser::TerminateNumber(HandleDigitParams params) {
+CalculatorParams CharacterParser::TerminateNumber(CalculatorParams params) {
     params.Numbers[params.NumberCount] = params.CurrentNumber;
     params.CurrentNumber = 0;
 	params.NumberOfDigits = 0;
@@ -102,12 +102,15 @@ HandleDigitParams CharacterParser::TerminateNumber(HandleDigitParams params) {
 	return params;
 }
 
-HandleDigitParams CharacterParser::HandleOperator(HandleDigitParams params, Platform::String^ character) {
-	params.Operators[params.OperatorCount] = character;
-	params.OperatorCount++;
+CalculatorParams CharacterParser::HandleBinaryOperator(CalculatorParams params, Platform::String^ character) {
+	params.BinaryOperators[params.BinaryOperatorCount] = character;
+	params.BinaryOperatorCount++;
 	return params;
 }
 
-//Platform::String^ * CharacterParser::GetOperators(CharacterParser::HandleDigitParams params) {
-	//return params.Operators;
-//}
+CalculatorParams CharacterParser::HandleUnaryOperator(CalculatorParams params, Platform::String^ character) {
+	params.UnaryOperators[params.UnaryOperatorCount] = character;
+	params.UnaryOperatorCount++;
+	return params;
+}
+

@@ -1,5 +1,5 @@
 #pragma once
-#include "HandleDigitParams.h"
+#include "CalculatorParams.h"
 using namespace Windows::UI::Xaml::Controls;
 using namespace Platform;
 
@@ -8,15 +8,15 @@ using namespace Platform;
 	public:
 			CharacterParser();
 			void DisplayCharacter(String^ ClickedText, TextBlock^ ScreenText);
-			String^ LogCharacter(String^ ClickedText, String^ DisplayedText);
-			HandleDigitParams HandleDigit(Platform::String^ Digit, HandleDigitParams params);
+			CalculatorParams HandleDigit(Platform::String^ Digit, CalculatorParams params);
 			int RefStringToInt(Platform::String^ theString);
 			bool IsInt(String^ character);
-			bool IsOperator(Platform::String^ character);
-			TextBlock^ DisplayLoggedCharacters(String^ LoggedCharacters, TextBlock^ ScreenLoggedCharacters);
-			HandleDigitParams TerminateNumber(HandleDigitParams params);
-			HandleDigitParams HandleOperator(HandleDigitParams params, Platform::String^ character);
-			//Platform::String^ * GetOperators(HandleDigitParams params);
+			bool IsBinaryOperator(Platform::String^ character);
+			bool IsUnaryOperator(Platform::String^ character);
+			CalculatorParams TerminateNumber(CalculatorParams params);
+			CalculatorParams HandleBinaryOperator(CalculatorParams params, Platform::String^ character);
+			CalculatorParams HandleUnaryOperator(CalculatorParams params, Platform::String^ character);
+			//Platform::String^ * GetOperators(CalculatorParams params);
 	};
 
 

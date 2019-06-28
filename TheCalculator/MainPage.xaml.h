@@ -7,7 +7,7 @@
 
 #include "MainPage.g.h"
 #include "CharacterParser.h"
-#include "HandleDigitParams.h"
+#include "CalculatorParams.h"
 
 namespace TheCalculator
 {
@@ -22,8 +22,9 @@ namespace TheCalculator
 		void HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 	private:
-		double RunCalculations();
-		HandleDigitParams params;
+	    double RunCalculations();
+		CalculatorParams params;
+		CharacterParser parser;
 		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void HandleExponential(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
