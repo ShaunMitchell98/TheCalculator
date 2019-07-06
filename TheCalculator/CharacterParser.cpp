@@ -54,12 +54,6 @@ CalculatorParams CharacterParser::HandleCharacter(String^ character, CalculatorP
 		params.Decimal = true;
 		params.Multiplier = 0.1;
 	}
-
-	else if (character == L"x²") {
-		double result = RunCalculations(params);
-		result = pow(result, 2);
-		params.Input = result.ToString();
-	}
 	else if (character == L"xʸ") {
 		params.Exponent = true;
 		params.Input = params.Input + "^";
@@ -72,28 +66,8 @@ CalculatorParams CharacterParser::HandleCharacter(String^ character, CalculatorP
 	else if (character == L"Del") {
 
 	}
-	else if (character == L"x³") {
-		double result = RunCalculations(params);
-		result = pow(result, 3);
-		params.Input = result.ToString();
-	}
 	else if (character == L"y√x") {
 
-	}
-	else if (character == L"√") {
-		double result = RunCalculations(params);
-		result = sqrt(result);
-		params.Input = result.ToString();
-	}
-	else if (character == L"10ˣ") {
-		double result = RunCalculations(params);
-		result = pow(10, result);
-		params.Input = result.ToString();
-	}
-	else if (character == L"log") {
-		double result = RunCalculations(params);
-		result = log10(result);
-		params.Input = result.ToString();
 	}
 	else if (character == L"Exp") {
 		params.Input = params.Input + ".e+0";
@@ -102,21 +76,6 @@ CalculatorParams CharacterParser::HandleCharacter(String^ character, CalculatorP
 	}
 	else if (character == L"Mod") {
 
-	}
-	else if (character == L"1/x") {
-		double result = RunCalculations(params);
-		result = 1 / result;
-		params.Input = result.ToString();
-	}
-	else if (character == L"eˣ") {
-		double result = RunCalculations(params);
-		result = pow(M_E, result);
-		params.Input = result.ToString();
-	}
-	else if (character == L"ln") {
-		double result = RunCalculations(params);
-		result = log(result);
-		params.Input = result.ToString();
 	}
 	else if (character == L"dms") {
 
@@ -155,10 +114,44 @@ String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
 		Input = ClickedText;
 	}
 
-	else if (Input == "0" && this->IsUnaryOperator(ClickedText)) {
+	else if (Input == "0" && (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
+		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹" || ClickedText == L"log")
+		|| ClickedText == L"ln") {
 		Input = ClickedText + "(";
 	}
-
+	else if (ClickedText == L"x²") {
+		Input = Input + "²";
+	}
+	else if (ClickedText == L"10ˣ") {
+		if (Input == "0") {
+			Input = L"10^";
+		}
+		else {
+			Input = Input + L"10^";
+		}
+	}
+	else if (ClickedText == L"eˣ") {
+		if (Input == "0") {
+			Input = L"e^";
+		}
+		else {
+			Input = Input + L"e^";
+		}
+	}
+	else if (ClickedText == L"x³") {
+		Input = Input + "³";
+	}
+	else if (ClickedText == L"√") {
+		Input = Input + L"√";
+	}
+	else if (ClickedText == L"1/x") {
+		if (Input == "0") {
+			Input = "1/";
+		}
+		else {
+			Input = Input + "1/";
+		}
+	}
 	else if (this->DoDisplay(ClickedText)) {
 		Input = Input + ClickedText;
 	}
@@ -193,7 +186,10 @@ bool CharacterParser::IsBinaryOperator(String^ character) {
 bool CharacterParser::IsUnaryOperator(String^ character) {
 	bool IsUnaryOperator;
 	if (character == L"sin" || character == L"cos" || character == L"tan" 
-		|| character == L"sin⁻¹" || character == L"cos⁻¹" || character == L"tan⁻¹") {
+		|| character == L"sin⁻¹" || character == L"cos⁻¹" || character == L"tan⁻¹"
+		|| character == L"x²" || character == L"10ˣ" || character == L"log" || character == L"eˣ"
+		|| character == L"x³" || character == L"ln" || character == L"√" 
+		|| character == L"1/x") {
 		IsUnaryOperator = true;
 	}
 	else {
