@@ -2,7 +2,6 @@
 #include "CppUnitTest.h"
 #include "..\TheCalculator\CharacterParser.h"
 #include "..\TheCalculator\CalculatorParams.h"
-//#include "..\TheCalculator\MainPage.xaml.h"
 #include "..\TheCalculator\RunCalculations.h"
 #include <math.h>
 
@@ -113,7 +112,7 @@ namespace TheCalculatorUnitTests
 		}
 
 		TEST_METHOD(Cube_x) {
-			Platform::String^ TestString[] = { L"x³", "5" };
+			Platform::String^ TestString[] = { "5", L"x³"};
 			CalculatorParams params;
 			Platform::String^ ExpectedOutput = "125";
 			CharacterParser parser;
