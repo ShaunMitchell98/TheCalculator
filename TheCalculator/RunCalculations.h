@@ -68,13 +68,22 @@ double RunCalculations(CalculatorParams params)
 			}
 		}
 	}
-
+	for (int i = 0; i < params.Tokens.size(); i++) {
+		if (params.Tokens[i] == "X" || params.Tokens[i] == "÷") {
+			params.Tokens[i - 1] = calculator.EvaluateBinaryOperation(params.Tokens[i - 1],
+				params.Tokens[i + 1], params.Tokens[i]);
+			params.Tokens.erase(params.Tokens.begin() + i + 1);
+			params.Tokens.erase(params.Tokens.begin() + i);
+			i = 0;
+		}
+	}
 	for (int i = 0; i < params.Tokens.size(); i++) {
 		if (parser.IsBinaryOperator(params.Tokens[i])) {
 		    params.Tokens[i-1] = calculator.EvaluateBinaryOperation(params.Tokens[i-1], 
 				params.Tokens[i+1], params.Tokens[i]);
 			params.Tokens.erase(params.Tokens.begin() + i + 1);
 			params.Tokens.erase(params.Tokens.begin() + i);
+			i = 0;
 		}
 	}
 

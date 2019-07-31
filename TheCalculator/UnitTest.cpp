@@ -274,5 +274,18 @@ namespace TheCalculatorUnitTests
 			double ActualOutput = RunCalculations(params);
 			Assert::AreEqual(ExpectedOutput, ActualOutput);
 		}
+
+		TEST_METHOD(MultiplicationPrioritisedOverAddition) {
+			Platform::String^ TestString[] = { "2", "X", "3", "+", "4",
+			"X", "5" };
+			double ExpectedOutput = 26;
+			CalculatorParams params;
+			CharacterParser parser;
+			for (int i = 0; i < (sizeof(TestString) / sizeof(*TestString)); i++) {
+				params = parser.HandleCharacter(TestString[i], params);
+			}
+			double ActualOutput = RunCalculations(params);
+			Assert::AreEqual(ExpectedOutput, ActualOutput);
+		}
 	};
 }
