@@ -1,8 +1,5 @@
 ﻿#include "CharacterParser.h"
 #include "App.xaml.h"
-#include <iostream>
-#include <math.h>
-#include "RunCalculations.h"
 
 
 #define M_PI 3.14159265359
@@ -25,99 +22,104 @@ CharacterParser::CharacterParser() {
 }
 
 
-CalculatorParams CharacterParser::HandleCharacter(String^ character, CalculatorParams params) {
-	
-	params.Input = this->LogCharacter(params.Input, character);
-	
-	//If the user clicks a number the parser converts the number clicked
-	//into an internally stored number it can use for arithmetic.
-	if (this->IsInt(character)) {
-		params = this->HandleDigit(character, params);
+CalculatorParams CharacterParser::HandleCharacter(String^ ClickedText, CalculatorParams params) {
+
+	params.DisplayOutput = this->LogCharacter(params.DisplayOutput, ClickedText);
+
+	if (this->IsBinaryOperator(ClickedText)) {
+		//We save the number before our binary operator to params.Tokens. If
+		//the previous token is a close bracket then there is no number that
+		//needs saving.
+		if (params.Tokens.size() != 0) {
+			if (params.Tokens[params.Tokens.size()-1] != ")") {
+				params.Tokens.push_back(params.CurrentNumber.ToString());
+				params = this->TerminateNumber(params);
+			}
+		}
+		else if (params.Tokens.size() == 0) {
+			params.Tokens.push_back(params.CurrentNumber.ToString());
+			params = this->TerminateNumber(params);
+		}
+		params.Tokens.push_back(ClickedText);
 	}
-	if (character != L"." && params.Exponent == true) {
-		params.Exponent = false;
+	else if (this->IsUnaryOperator(ClickedText)) {
+		if (params.CurrentNumber != 0) {
+			params.Tokens.push_back(params.CurrentNumber.ToString());
+			params = this->TerminateNumber(params);
+		}
+
+		params.Tokens.push_back(ClickedText);
+		if (ClickedText != L"x²" && ClickedText != L"x³" &&
+			ClickedText != L"xʸ" && ClickedText != L"n!") {
+			params.Tokens.push_back("(");
+		}
 	}
-	//Check whether the button clicked is a binary operator. If this is the case
-	//we close the current number and save it for calculations and save the 
-	//operator which is to be used on that number.
-	else if (this->IsBinaryOperator(character) && params.CurrentNumber != 0)
-	{
-		params = this->TerminateNumber(params);
-		params = this->HandleBinaryOperator(params, character);
-	}
-	else if (this->IsUnaryOperator(character))
-	{
-		params = this->HandleUnaryOperator(params, character);
+	else if (ClickedText == L"(") {
+		params.Tokens.push_back(ClickedText);
 	}
 
-	else if (character == L"." && params.Decimal == false) {
+	//If the user clicks a number the parser converts the number clicked
+	//into an internally stored number it can use for arithmetic.
+	else if (this->IsInt(ClickedText)) {
+		params = this->HandleDigit(ClickedText, params);
+	}
+	if (ClickedText != L"." && !this->IsInt(ClickedText) && params.CurrentNumber != 0) {
+		params.Tokens.push_back(params.CurrentNumber.ToString());
+		params = this->TerminateNumber(params);
+		params.Tokens.push_back(ClickedText);
+	}
+
+	if (ClickedText == L"." && params.Decimal == false) {
 		params.Decimal = true;
 		params.Multiplier = 0.1;
 	}
-	else if (character == L"xʸ") {
-		params.Exponent = true;
-		params.Input = params.Input + "^";
-	}
-	else if (character == L"CE") {
-		//int LastCharIndex = (*params.Input->Length - 1);
-		//params.Input[LastCharIndex] = "";
+	else if (ClickedText == L"CE") {
+		//int LastCharIndex = (*params.DisplayOutput->Length - 1);
+		//params.DisplayOutput[LastCharIndex] = "";
 		//params.CurrentNumber = 0;
 	}
-	else if (character == L"Del") {
+	else if (ClickedText == L"Del") {
 
 	}
-	else if (character == L"y√x") {
+	else if (ClickedText == L"y√x") {
 
 	}
-	else if (character == L"Exp") {
-		params.Input = params.Input + ".e+0";
-		params = TerminateNumber(params);
+	else if (ClickedText == L"Exp") {
+		params.DisplayOutput = params.DisplayOutput + ".e+0";
 		params.Exp = true;
 	}
-	else if (character == L"Mod") {
+	else if (ClickedText == L"Mod") {
 
 	}
-	else if (character == L"dms") {
+	else if (ClickedText == L"dms") {
 
 	}
-	else if (character == L"deg") {
+	else if (ClickedText == L"deg") {
 
 	}
-	else if (character == L"↑") {
-
-	}
-	else if (character == L"n!") {
-		params.CurrentNumber = this->Factorial(params.CurrentNumber);
-	}
-	else if (character == L"±") {
-		params.CurrentNumber = -params.CurrentNumber;
-	}
-	else if (character == L")") {
-		params.CloseBracketIndex = params.NumberCount;
-	    //params.CurrentNumber = RunCalculations(params);
-		params = this->TerminateNumber(params);
-	}
-	if (character == L"π") {
-		params.Numbers[params.NumberCount] = M_PI;
-		params.NumberCount = params.NumberCount + 1;
-		//params.Input =  params.Input + M_PI.ToString();
+	else if (ClickedText == L"π") {
+		params.CurrentNumber = M_PI;
 	}
 	return params;
 }
 
 
 
-String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
-	
+Platform::String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
 
 	if (Input == "0" && !(this->IsUnaryOperator(ClickedText))) {
 		Input = ClickedText;
 	}
 
-	else if (Input == "0" && (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
-		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹" || ClickedText == L"log")
+	else if (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
+		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹" || ClickedText == L"log"
 		|| ClickedText == L"ln") {
-		Input = ClickedText + "(";
+		if (Input == "0") {
+			Input = ClickedText + "(";
+		}
+		else {
+			Input = Input + ClickedText + "(";
+		}
 	}
 	else if (ClickedText == L"x²") {
 		Input = Input + "²";
@@ -142,7 +144,12 @@ String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
 		Input = Input + "³";
 	}
 	else if (ClickedText == L"√") {
-		Input = Input + L"√";
+		if (Input == "0") {
+			Input = L"√";
+		}
+		else {
+			Input = Input + L"√";
+		}
 	}
 	else if (ClickedText == L"1/x") {
 		if (Input == "0") {
@@ -152,16 +159,30 @@ String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
 			Input = Input + "1/";
 		}
 	}
+	else if (ClickedText == "n!") {
+		if (Input == "0") {
+			Input = "0";
+		}
+		else {
+			Input = Input + "!";
+		}
+	}
+	else if (ClickedText == "Exp") {
+		Input = Input + ".e+0";
+	}
+	else if (ClickedText == L"xʸ") {
+		Input = Input + "^";
+	}
 	else if (this->DoDisplay(ClickedText)) {
 		Input = Input + ClickedText;
 	}
 	return Input;
 }
 
-bool CharacterParser::IsInt(String^ character) {
+bool CharacterParser::IsInt(String^ ClickedText) {
 	bool IsInt;
-	if (character == "0" || character == "1" || character == "2" || character == "3" || character == "4" ||
-		character == "5" || character == "6" || character == "7" || character == "8" || character == "9") {
+	if (ClickedText == "0" || ClickedText == "1" || ClickedText == "2" || ClickedText == "3" || ClickedText == "4" ||
+		ClickedText == "5" || ClickedText == "6" || ClickedText == "7" || ClickedText == "8" || ClickedText == "9") {
 		IsInt = true;
 	}
 	else {
@@ -171,10 +192,11 @@ bool CharacterParser::IsInt(String^ character) {
 }
 
 //This function checks whether the button clicked is an operator.
-bool CharacterParser::IsBinaryOperator(String^ character) {
+bool CharacterParser::IsBinaryOperator(String^ ClickedText) {
 	bool IsBinaryOperator;
-	if (character == "+" || character == "-" || character == "X" ||
-		character == "÷") {
+	if (ClickedText == "+" || ClickedText == "-" || ClickedText == "X" ||
+		ClickedText == "÷" || ClickedText == "Exp" || 
+		ClickedText == L"xʸ") {
 		IsBinaryOperator = true;
 	}
 	else {
@@ -183,13 +205,13 @@ bool CharacterParser::IsBinaryOperator(String^ character) {
 	return IsBinaryOperator;
 }
 
-bool CharacterParser::IsUnaryOperator(String^ character) {
+bool CharacterParser::IsUnaryOperator(String^ ClickedText) {
 	bool IsUnaryOperator;
-	if (character == L"sin" || character == L"cos" || character == L"tan" 
-		|| character == L"sin⁻¹" || character == L"cos⁻¹" || character == L"tan⁻¹"
-		|| character == L"x²" || character == L"10ˣ" || character == L"log" || character == L"eˣ"
-		|| character == L"x³" || character == L"ln" || character == L"√" 
-		|| character == L"1/x") {
+	if (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
+		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹"
+		|| ClickedText == L"x²" || ClickedText == L"10ˣ" || ClickedText == L"log" || ClickedText == L"eˣ"
+		|| ClickedText == L"x³" || ClickedText == L"ln" || ClickedText == L"√"
+		|| ClickedText == L"1/x" || ClickedText == L"n!") {
 		IsUnaryOperator = true;
 	}
 	else {
@@ -198,68 +220,41 @@ bool CharacterParser::IsUnaryOperator(String^ character) {
 	return IsUnaryOperator;
 }
 
-int CharacterParser::RefStringToInt(String^ theString) {
-	return _wtoi(theString->Data());
-}
-
 
 CalculatorParams CharacterParser::HandleDigit(String^ Digit, CalculatorParams params) {
 	//If the button clicked is a number, this section adds the number to the current number.
-	
-   	int CurrentDigit = this->RefStringToInt(Digit);
 
-     if (!params.Decimal && !params.Exponent) {
+	int CurrentDigit = _wtoi(Digit->Data());
+
+	if (!params.Decimal) {
 		params.CurrentNumber = params.CurrentNumber * 10;
 		params.CurrentNumber = params.CurrentNumber + CurrentDigit;
 	}
-	
+
 	else if (params.Decimal) {
 		params.CurrentNumber = params.CurrentNumber + (CurrentDigit * params.Multiplier);
 		params.Multiplier = params.Multiplier * 0.1;
-	}
-	else if (params.Exponent) {
-		params.CurrentNumber = pow(params.CurrentNumber, CurrentDigit);
 	}
 	return params;
 }
 
 CalculatorParams CharacterParser::TerminateNumber(CalculatorParams params) {
 	if (params.Exp) {
-		params.Numbers[params.NumberCount -1] =  params.Numbers[params.NumberCount-1] * pow(10, params.CurrentNumber);
 		params.Exp = false;
-   }
-	
-	params.Numbers[params.NumberCount] = params.CurrentNumber;
-    params.CurrentNumber = 0;
-	params.NumberCount = params.NumberCount + 1;
+	}
+
+	params.CurrentNumber = 0;
 	params.Decimal = false;
 	params.Multiplier = 1.0;
 	return params;
 }
 
-CalculatorParams CharacterParser::HandleBinaryOperator(CalculatorParams params, Platform::String^ character) {
-	params.BinaryOperators[params.BinaryOperatorCount] = character;
-	params.BinaryOperatorCount++;
-	return params;
-}
-
-CalculatorParams CharacterParser::HandleUnaryOperator(CalculatorParams params, Platform::String^ character) {
-	params.UnaryOperators[params.UnaryOperatorCount] = character;
-	params.UnaryOperatorCount++;
-	params.OpenBracketIndex = params.NumberCount;
-	
-	return params;
-}
-
-bool CharacterParser::DoDisplay(Platform::String^ character) {
+bool CharacterParser::DoDisplay(Platform::String^ ClickedText) {
 	bool DoDisplay = false;
-	if (this->IsInt(character) || this->IsUnaryOperator(character) ||
-		this->IsBinaryOperator(character) || character == L"π" || character == L")") {
+	if (this->IsInt(ClickedText) || this->IsUnaryOperator(ClickedText) ||
+		this->IsBinaryOperator(ClickedText) || ClickedText == L"π" || ClickedText == "(" ||
+		ClickedText == L")" || ClickedText == ".") {
 		DoDisplay = true;
 	}
 	return DoDisplay;
-}
-
-double CharacterParser::Factorial(double n) {
-    return (n == 1 || n == 0) ? 1 : Factorial(n - 1) * n;
 }

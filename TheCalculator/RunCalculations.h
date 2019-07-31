@@ -1,122 +1,83 @@
 ﻿#pragma once
 #include "CalculatorParams.h"
 #include "CharacterParser.h"
-#include <cmath>
+#include "Calculator.h"
+#include "CloseBrackets.h"
+#include <vector>
+#include <iterator>
 
 
-#define M_PI 3.14159265359
-#define M_E 2.7182818284 //e to 10 decimal places
-
-inline double RunCalculations(CalculatorParams params)
+double RunCalculations(CalculatorParams params)
 {
 	CharacterParser parser;
+	Calculator calculator;
 	double result = 0.0;
 	if (params.CurrentNumber != 0) {
+		params.Tokens.push_back(params.CurrentNumber.ToString());
 		params = parser.TerminateNumber(params);
 	}
 
 
-	if (params.NumberCount = 1) {
-		result = params.Numbers[0];
+	if (params.Tokens.size() == 1) {
+		result = _wtof(params.Tokens[0]->Data());
 	}
 
-	if (params.OpenBracketIndex != -1) {
-		for (int i = params.OpenBracketIndex; i < params.CloseBracketIndex; i++) {
-			if (params.BinaryOperators[i] == "+") {
-				result = params.Numbers[i] + params.Numbers[i + 1];
-				params.Numbers[i] = 0;
-				params.Numbers[i + 1] = result;
-				params.BinaryOperators[i] = "D";
+	//Check for any unclosed brackets. If any are found the last open bracket
+	//is closed at the end. All others are closed two tokens away, such that
+	//there is one token between the open and closed bracket.
+	params.Tokens = CloseBrackets(params.Tokens);
+	
+	//Loop over each open bracket and pass the numbers between this
+	//open bracket and the close bracket with the same index to 
+	//HandleBracketedExpression.
+	
+	for (int i = 0; i < params.Tokens.size(); i++) {
+		
+		//Check each token to see if it is an open bracket.
+		if (params.Tokens[i] == "(") {
+			int StartIndex = i;
+			int EndIndex = calculator.FindEndIndex(params.Tokens, StartIndex);
+			std::vector<Platform::String^> BracketedExpression(params.Tokens.begin() + 
+				StartIndex, params.Tokens.begin() + EndIndex + 1);
+				
+			for (int i = EndIndex; i >= StartIndex; i--) {
+				params.Tokens.erase(params.Tokens.begin() + i);
 			}
-			if (params.BinaryOperators[i] == "-") {
-				result = params.Numbers[i] - params.Numbers[i + 1];
-				params.Numbers[i] = 0;
-				params.Numbers[i + 1] = result;
-				params.BinaryOperators[i] == "D";
+			params.Tokens.emplace(params.Tokens.begin() + StartIndex, 
+				calculator.EvaluateBracketedExpression(BracketedExpression));
+			i = 0;
 			}
-			if (params.BinaryOperators[i] == "X") {
-				result = params.Numbers[i] * params.Numbers[i + 1];
-				params.Numbers[i] = 0;
-				params.Numbers[i + 1] = result;
-				params.BinaryOperators[i] == "D";
-			}
-			if (params.BinaryOperators[i] == "÷") {
-				result = params.Numbers[i] / params.Numbers[i + 1];
-				params.Numbers[i] = 0;
-				params.Numbers[i + 1] = result;
-				params.BinaryOperators[i] == "D";
-			}
-		}
-		params.Numbers[params.OpenBracketIndex] = result;
-		params.OpenBracketIndex = -1;
-
 	}
 
-	for (int i = 0; i < params.UnaryOperatorCount; i++) {
-		if (params.UnaryOperators[i] == L"sin") {
-			result = sin(params.Numbers[i]);
-		}
-		else if (params.UnaryOperators[i] == L"cos") {
-			result = cos(params.Numbers[i]);
-		}
-		else if (params.UnaryOperators[i] == L"tan") {
-			result = tan(params.Numbers[i]);
-		}
-		else if (params.UnaryOperators[i] == L"sin⁻¹") {
-			result = asin(params.Numbers[i]) * (180 / M_PI);
-		}
-		else if (params.UnaryOperators[i] == L"cos⁻¹") {
-			result = acos(params.Numbers[i]) * (180 / M_PI);
-		}
-		else if (params.UnaryOperators[i] == L"tan⁻¹") {
-			result = atan(params.Numbers[i]) * (180 / M_PI);
-		}
-		else if (params.UnaryOperators[i] == L"x²") {
-			result = pow(params.Numbers[i], 2);
-		}
-		else if (params.UnaryOperators[i] == L"10ˣ") {
-			result = pow(10, result);
-		}
-		else if (params.UnaryOperators[i] == L"log") {
-			result = log10(result);
-		}
-		else if (params.UnaryOperators[i] == L"eˣ") {
-			result = pow(M_E, result);
-		}
-		else if (params.UnaryOperators[i] == L"x³") {
-			result = pow(result, 3);
-		}
-		else if (params.UnaryOperators[i] == L"ln") {
-			result = log(result);
-		}
-		else if (params.UnaryOperators[i] == L"√") {
-			result = sqrt(result);
-		}
-		else if (params.UnaryOperators[i] == L"1/x") {
-			result = 1 / result;
+	for (int i = 0;  i < params.Tokens.size(); i++) {
+		if (parser.IsUnaryOperator(params.Tokens[i])) {
+			if (params.Tokens[i] == L"x²" || params.Tokens[i] == L"x³" || 
+				params.Tokens[i] == L"xʸ" || params.Tokens[i] == L"n!") {
+				params.Tokens[i-1] = calculator.EvaluateUnaryOperation(params.Tokens[i], params.Tokens[i-1]);
+				params.Tokens.erase(params.Tokens.begin() + i);
+				//This line restarts the loop from the beginning of tokens. This
+		        //may be needed if index changes executed by 
+		        //HandleUnaryOperation mess up the indexing here.
+				i = 0;
+		   }
+			else {
+				params.Tokens[i] = calculator.EvaluateUnaryOperation(params.Tokens[i],
+					params.Tokens[i + 1]);
+				params.Tokens.erase(params.Tokens.begin() + i + 1);
+				i = 0;
+			}
 		}
 	}
-	for (int i = 0; i < params.BinaryOperatorCount; i++) {
-		if (params.BinaryOperators[i] == "+") {
-			result = params.Numbers[i] + params.Numbers[i + 1];
-			params.Numbers[i] = 0;
-			params.Numbers[i + 1] = result;
-		}
-		if (params.BinaryOperators[i] == "-") {
-			result = params.Numbers[i] - params.Numbers[i + 1];
-			params.Numbers[i] = 0;
-			params.Numbers[i + 1] = result;
-		}
-		if (params.BinaryOperators[i] == "X") {
-			result = params.Numbers[i] * params.Numbers[i + 1];
-			params.Numbers[i] = 0;
-			params.Numbers[i + 1] = result;
-		}
-		if (params.BinaryOperators[i] == "÷") {
-			result = params.Numbers[i] / params.Numbers[i + 1];
-			params.Numbers[i] = 0;
-			params.Numbers[i + 1] = result;
+
+	for (int i = 0; i < params.Tokens.size(); i++) {
+		if (parser.IsBinaryOperator(params.Tokens[i])) {
+		    params.Tokens[i-1] = calculator.EvaluateBinaryOperation(params.Tokens[i-1], 
+				params.Tokens[i+1], params.Tokens[i]);
+			params.Tokens.erase(params.Tokens.begin() + i + 1);
+			params.Tokens.erase(params.Tokens.begin() + i);
 		}
 	}
+
+	result = _wtof(params.Tokens[0]->Data());
 	return result;
 }

@@ -1,4 +1,5 @@
 ﻿//
+//
 // MainPage.xaml.h
 // Declaration of the MainPage class.
 //
@@ -7,7 +8,6 @@
 
 #include "MainPage.g.h"
 #include "CharacterParser.h"
-#include "CalculatorParams.h"
 
 namespace TheCalculator
 {
@@ -20,13 +20,11 @@ namespace TheCalculator
 	public:
 		MainPage();
 		void HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 	private:
-	    double RunCalculations();
 		CalculatorParams params;
 		CharacterParser parser;
-		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void HandleExponential(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

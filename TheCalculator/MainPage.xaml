@@ -8,11 +8,11 @@
     mc:Ignorable="d"
     Background="{ThemeResource SystemControlAcrylicElementBrush}">
 
-    
-    
+
+
     <Page.Resources>
         <x:String x:Key="Tokens"></x:String>
-  
+
         <Style TargetType="TextBlock" x:Key="NumberTextBlock">
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="25"/>
@@ -36,7 +36,7 @@
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="Background" Value="#CCCCCC"/>
             <Setter Property="Margin" Value="1"/>
-            
+
         </Style>
 
         <Style TargetType="Button" x:Key="DigitButton">
@@ -47,8 +47,8 @@
         </Style>
 
     </Page.Resources>
-    
-    
+
+
 
     <Grid x:Name="Window" Grid.Row ="0" Grid.Column="0" Background="#DDDDDD">
         <Grid.ColumnDefinitions>
@@ -78,7 +78,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-        
+
             </Grid.RowDefinitions>
 
             <Button Style = "{StaticResource Button}" Grid.Row ="0" Grid.Column = "0" Click="HandleCharacter">
@@ -113,7 +113,7 @@
                 <TextBlock Style ="{StaticResource TextBlock}" Text="x³"></TextBlock>
             </Button>
             <Button Style = "{StaticResource Button}" Grid.Row ="1" Grid.Column = "1" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="y√x"></TextBlock>
+                <TextBlock Style ="{StaticResource TextBlock}" Text="yvx"></TextBlock>
             </Button>
             <Button Style = "{StaticResource Button}" Grid.Row ="1" Grid.Column = "2" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="sin⁻¹"></TextBlock>
@@ -136,95 +136,95 @@
             <Button Style = "{StaticResource Button}" Grid.Row ="1" Grid.Column = "8" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="X"></TextBlock>
             </Button>
-          
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "0" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="√"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "1" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="10^x"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "2" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="log"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "3" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="Exp"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "4" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="Mod"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "5" Click="HandleCharacter">
-                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="4"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "6" Click="HandleCharacter">
-                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="5"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "7" Click="HandleCharacter">
-                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="6"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "8" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="-"></TextBlock>
-                </Button>
-      
 
-          
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "0" Click="HandleCharacter">
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "0" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="√"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "1" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="10ˣ"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "2" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="log"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "3" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="Exp"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "4" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="Mod"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "5" Click="HandleCharacter">
+                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="4"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "6" Click="HandleCharacter">
+                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="5"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="2" Grid.Column = "7" Click="HandleCharacter">
+                <TextBlock Style = "{StaticResource NumberTextBlock}" Text="6"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="2" Grid.Column = "8" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="-"></TextBlock>
+            </Button>
+
+
+
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "0" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="1/x"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "1" Click="HandleExponential">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "1" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="eˣ"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "2" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "2" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="ln"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "3" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "3" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="dms"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "4" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "4" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="deg"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "5" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "5" Click="HandleCharacter">
                 <TextBlock Style = "{StaticResource NumberTextBlock}" Text="1"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "6" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "6" Click="HandleCharacter">
                 <TextBlock Style = "{StaticResource NumberTextBlock}" Text="2"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "7" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="3" Grid.Column = "7" Click="HandleCharacter">
                 <TextBlock Style = "{StaticResource NumberTextBlock}" Text="3"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "8" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="3" Grid.Column = "8" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="+"></TextBlock>
-                </Button>
-            
+            </Button>
+
 
             <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "0" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="↑"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "1" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "1" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="π"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "2" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "2" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="n!"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "3" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "3" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="("></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "4" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "4" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text=")"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "5" Click="HandleCharacter">
-                <TextBlock Style ="{StaticResource TextBlock}" Text="±"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource DigitButton}" Grid.Row ="4" Grid.Column = "6" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "5" Click="HandleCharacter">
+                <TextBlock Style ="{StaticResource TextBlock}" Text="D"></TextBlock>
+            </Button>
+            <Button Style = "{StaticResource DigitButton}" Grid.Row ="4" Grid.Column = "6" Click="HandleCharacter">
                 <TextBlock Style = "{StaticResource NumberTextBlock}" Text="0"></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "7" Click="HandleCharacter">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "7" Click="HandleCharacter">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="."></TextBlock>
-                </Button>
-                <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "8" Click="DisplayResult">
+            </Button>
+            <Button Style = "{StaticResource Button}" Grid.Row ="4" Grid.Column = "8" Click="DisplayResult">
                 <TextBlock Style ="{StaticResource TextBlock}" Text="="></TextBlock>
-                </Button>
-            
-            
+            </Button>
+
+
 
         </Grid>
     </Grid>

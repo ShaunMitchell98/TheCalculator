@@ -2,9 +2,10 @@
 // MainPage.xaml.cpp
 // Implementation of the MainPage class.
 //
-#define _USE_MATH_DEFINES
 
-#include "pch.h"
+#include <collection.h>
+#include <ppltasks.h>
+#include "App.xaml.h"
 #include "MainPage.xaml.h"
 #include <cmath>
 #include "RunCalculations.h"
@@ -34,14 +35,14 @@ MainPage::MainPage()
 void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 
-    //Saves the text in the button clicked by the user as a string which
+	//Saves the text in the button clicked by the user as a string which
 	//can be used in various Parser functions.
 	Button^ ClickedButton = safe_cast <Button^> (sender);
 	TextBlock^ ClickedTextBlock = safe_cast <TextBlock^> (ClickedButton->Content);
 	Platform::String^ ClickedText = ClickedTextBlock->Text;
 
 	params = parser.HandleCharacter(ClickedText, params);
-	ScreenText->Text = params.Input;
+	ScreenText->Text = params.DisplayOutput;
 }
 
 
@@ -51,34 +52,18 @@ void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI:
 {
 	params.CurrentNumber = 0;
 
-	//Reset the BinaryOperators array.
-	for (int i = 0; i < (sizeof(params.BinaryOperators)/sizeof(*params.BinaryOperators)); i++) {
-		params.BinaryOperators[i] = "D";
-	}
-
-	//Reset the numbers array.
-	for (int j = 0; j < (sizeof(params.Numbers)/sizeof(*params.Numbers)); j++) {
-		params.Numbers[j] = 0;
-	}
-
-	//Reset the UnaryOperators array.
-	for (int k = 0; k < (sizeof(params.UnaryOperators) / sizeof(*params.UnaryOperators)); k++) {
-		params.UnaryOperators[k] = "D";
-	}
+	params.Tokens.clear();
 
 	//Reset parameters tracking numbers and operators.
-	params.BinaryOperatorCount = 0;
-	params.NumberCount = 0;
-	params.UnaryOperatorCount = 0;
 	params.Decimal = false;
 	params.Multiplier = 1.0;
-	params.Input = "0";
+	params.DisplayOutput = "0";
 	ScreenText->Text = "0";
 }
 
 
 void TheCalculator::MainPage::DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	double result = RunCalculations(params);
+ 	double result = RunCalculations(params);
 	ScreenText->Text = result.ToString();
 }
