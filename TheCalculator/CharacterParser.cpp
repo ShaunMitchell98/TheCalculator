@@ -85,7 +85,6 @@ CalculatorParams CharacterParser::HandleCharacter(String^ ClickedText, Calculato
 
 	}
 	else if (ClickedText == L"Exp") {
-		params.DisplayOutput = params.DisplayOutput + ".e+0";
 		params.Exp = true;
 	}
 	else if (ClickedText == L"Mod") {
