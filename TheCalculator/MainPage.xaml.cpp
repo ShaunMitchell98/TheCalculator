@@ -45,6 +45,21 @@ void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::Rout
 	ScreenText->Text = params.DisplayOutput;
 }
 
+void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e) {
+	Button^ ClickedButton = safe_cast <Button^> (sender);
+	TextBlock^ ClickedTextBlock = safe_cast <TextBlock^> (ClickedButton->Content);
+	Platform::String^ ClickedText = ClickedTextBlock->Text;
+
+	if (ClickedText == L"Deg") {
+		params.Unit = Degrees;
+		ClickedTextBlock->Text = L"Rad";
+	}
+	else if (ClickedText == L"Rad") {
+		params.Unit = Degrees;
+		ClickedTextBlock->Text = L"Deg";
+	}
+}
+
 
 //This function resets CalculatorParams and the ScreenText. It is called when
 //the user clicks C.

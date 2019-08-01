@@ -93,9 +93,6 @@ CalculatorParams CharacterParser::HandleCharacter(String^ ClickedText, Calculato
 	else if (ClickedText == L"dms") {
 
 	}
-	else if (ClickedText == L"deg") {
-
-	}
 	else if (ClickedText == L"π") {
 		params.CurrentNumber = M_PI;
 	}
@@ -106,11 +103,11 @@ CalculatorParams CharacterParser::HandleCharacter(String^ ClickedText, Calculato
 
 Platform::String^ CharacterParser::LogCharacter(String^ Input, String^ ClickedText) {
 
-	if (Input == "0" && !(this->IsUnaryOperator(ClickedText))) {
-		Input = ClickedText;
-	}
+	//if (Input == "0" && !(this->IsUnaryOperator(ClickedText))) {
+		//Input = ClickedText;
+	//}
 
-	else if (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
+	if (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
 		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹" || ClickedText == L"log"
 		|| ClickedText == L"ln") {
 		if (Input == "0") {

@@ -44,7 +44,7 @@ double RunCalculations(CalculatorParams params)
 				params.Tokens.erase(params.Tokens.begin() + i);
 			}
 			params.Tokens.emplace(params.Tokens.begin() + StartIndex, 
-				calculator.EvaluateBracketedExpression(BracketedExpression));
+				calculator.EvaluateBracketedExpression(BracketedExpression, params.Unit));
 			i = 0;
 			}
 	}
@@ -53,7 +53,7 @@ double RunCalculations(CalculatorParams params)
 		if (parser.IsUnaryOperator(params.Tokens[i])) {
 			if (params.Tokens[i] == L"x²" || params.Tokens[i] == L"x³" || 
 				params.Tokens[i] == L"xʸ" || params.Tokens[i] == L"n!") {
-				params.Tokens[i-1] = calculator.EvaluateUnaryOperation(params.Tokens[i], params.Tokens[i-1]);
+				params.Tokens[i-1] = calculator.EvaluateUnaryOperation(params.Tokens[i], params.Tokens[i-1], params.Unit);
 				params.Tokens.erase(params.Tokens.begin() + i);
 				//This line restarts the loop from the beginning of tokens. This
 		        //may be needed if index changes executed by 
@@ -62,7 +62,7 @@ double RunCalculations(CalculatorParams params)
 		   }
 			else {
 				params.Tokens[i] = calculator.EvaluateUnaryOperation(params.Tokens[i],
-					params.Tokens[i + 1]);
+					params.Tokens[i + 1], params.Unit);
 				params.Tokens.erase(params.Tokens.begin() + i + 1);
 				i = 0;
 			}

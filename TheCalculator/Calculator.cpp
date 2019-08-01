@@ -42,7 +42,7 @@ int Calculator::FindEndIndex(std::vector<Platform::String^> Tokens, int StartInd
 }
 
 //Replace a bracketed expression with a single number.
-Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::String^> Tokens) {
+Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::String^> Tokens, AngleUnit Unit) {
 
 	//If there is a bracketed expression within the bracketed expression we
 	//must recursively call this function until there are no more embedded
@@ -64,7 +64,7 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 			for (int i = EmbeddedCloseBracketIndex; i >= EmbeddedOpenBracketIndex; i--) {
 				Tokens.erase(Tokens.begin() + i);
 			}
-			Tokens.emplace(Tokens.begin() + EmbeddedOpenBracketIndex, EvaluateBracketedExpression(EmbeddedBracket));
+			Tokens.emplace(Tokens.begin() + EmbeddedOpenBracketIndex, EvaluateBracketedExpression(EmbeddedBracket, Unit));
 			j = 1;
 		}
 	}
@@ -72,7 +72,7 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 	//Loop over each element in the bracket and check whether it is a unary operator or a binary operator. 
 	for (int i = 1; i < Tokens.size(); i++) {
 		if (parser.IsUnaryOperator(Tokens[i])) {
-			Tokens[i] = EvaluateUnaryOperation(Tokens[i], Tokens[i+1]);
+			Tokens[i] = EvaluateUnaryOperation(Tokens[i], Tokens[i+1], Unit);
 			//Erase the element at address j+1 from params.Tokens.
 			Tokens.erase(Tokens.begin() + i + 1);
 			i = 1;
@@ -96,27 +96,34 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 
 
 
-Platform::String^ Calculator::EvaluateUnaryOperation(Platform::String^ UnaryOperator, Platform::String^ StringNumber) {
+Platform::String^ Calculator::EvaluateUnaryOperation(Platform::String^ UnaryOperator, Platform::String^ StringNumber, AngleUnit Unit) {
 
 	double result;
 	double Number = _wtof(StringNumber->Data());
+	double UnitConversion;
+	if (Unit == Degrees) {
+		UnitConversion = 180 / M_PI;
+	}
+	else {
+		UnitConversion = 1;
+	}
 	if (UnaryOperator == L"sin") {
-		result = sin(Number);
+		result = sin((1/UnitConversion) * Number);
 	}
 	else if (UnaryOperator == L"cos") {
-		result = cos(Number);
+		result = cos((1/UnitConversion) * Number);
 	}
 	else if (UnaryOperator == L"tan") {
-		result = tan(Number);
+		result = tan((1/UnitConversion) * Number);
 	}
 	else if (UnaryOperator == L"sin⁻¹") {
-		result = asin(Number) * (180 / M_PI);
+		result = asin(Number) * UnitConversion;
 	}
 	else if (UnaryOperator == L"cos⁻¹") {
-		result = acos(Number) * (180 / M_PI);
+		result = acos(Number) * UnitConversion;
 	}
 	else if (UnaryOperator == L"tan⁻¹") {
-		result = atan(Number) * (180 / M_PI);
+		result = atan(Number) * UnitConversion;
 	}
 	else if (UnaryOperator == L"x²") {
 		result = pow(Number, 2);
