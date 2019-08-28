@@ -7,7 +7,7 @@
 #pragma once
 
 #include "MainPage.g.h"
-#include "CharacterParser.h"
+#include "TokenParser.h"
 
 namespace TheCalculator
 {
@@ -19,13 +19,14 @@ namespace TheCalculator
 	{
 	public:
 		MainPage();
-		void HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void HandleToken(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 	private:
+		Platform::String^ DisplayToken(Platform::String^ Input, Platform::String^ ClickedText);
 		CalculatorParams params;
-		CharacterParser parser;
+		TokenParser parser;
 	};
 }

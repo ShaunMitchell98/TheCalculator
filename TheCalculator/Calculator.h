@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CalculatorParams.h"
-#include "CharacterParser.h"
+#include "TokenParser.h"
 #include <vector>
 #include <iterator>
 
@@ -17,6 +17,6 @@ public:
 		Platform::String^ BinaryOperation);
 
 private:
-	CharacterParser parser;
+	TokenParser parser;
 	double Factorial(double Number);
 };

@@ -31,8 +31,9 @@ MainPage::MainPage()
 }
 
 
-
-void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+//This is the event handler for most button presses. It uses the parser to categories the input as a number, or operator.
+//It also handles displaying the token in the output window.
+void MainPage::HandleToken(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 
 	//Saves the text in the button clicked by the user as a string which
@@ -41,11 +42,81 @@ void MainPage::HandleCharacter(Platform::Object^ sender, Windows::UI::Xaml::Rout
 	TextBlock^ ClickedTextBlock = safe_cast <TextBlock^> (ClickedButton->Content);
 	Platform::String^ ClickedText = ClickedTextBlock->Text;
 
-	params = parser.HandleCharacter(ClickedText, params);
+	params = parser.ParseToken(ClickedText, params);
+ 	params.DisplayOutput = DisplayToken(params.DisplayOutput, ClickedText);
 	ScreenText->Text = params.DisplayOutput;
 }
 
+Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::String^ ClickedText) {
+
+	if (ClickedText == L"sin" || ClickedText == L"cos" || ClickedText == L"tan"
+		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹" || ClickedText == L"log"
+		|| ClickedText == L"ln") {
+		if (Input == "0") {
+			Input = ClickedText + "(";
+		}
+		else {
+			Input = Input + ClickedText + "(";
+		}
+	}
+	else if (ClickedText == L"x²") {
+		Input = Input + "²";
+	}
+	else if (ClickedText == L"10ˣ") {
+		if (Input == "0") {
+			Input = L"10^";
+		}
+		else {
+			Input = Input + L"10^";
+		}
+	}
+	else if (ClickedText == L"eˣ") {
+		if (Input == "0") {
+			Input = L"e^";
+		}
+		else {
+			Input = Input + L"e^";
+		}
+	}
+	else if (ClickedText == L"x³") {
+		Input = Input + "³";
+	}
+	else if (ClickedText == L"1/x") {
+		if (Input == "0") {
+			Input = "1/";
+		}
+		else {
+			Input = Input + "1/";
+		}
+	}
+	else if (ClickedText == "n!") {
+		if (Input == "0") {
+			Input = "0";
+		}
+		else {
+			Input = Input + "!";
+		}
+	}
+	else if (ClickedText == "Exp") {
+		Input = Input + ".e+0";
+	}
+	else if (ClickedText == L"xʸ") {
+		Input = Input + "^";
+	}
+	else {
+		if (Input == "0") {
+			Input = ClickedText;
+		}
+		else {
+			Input = Input + ClickedText;
+		}
+	}
+	return Input;
+}
+
+//When the user clicks the Ded/Rad button, this function is called to change the unit. This affects functions such as sin().
 void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e) {
+	
 	Button^ ClickedButton = safe_cast <Button^> (sender);
 	TextBlock^ ClickedTextBlock = safe_cast <TextBlock^> (ClickedButton->Content);
 	Platform::String^ ClickedText = ClickedTextBlock->Text;
@@ -66,8 +137,7 @@ void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEve
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	params.CurrentNumber = 0;
-
-	params.Tokens.clear();
+    params.Tokens.clear();
 
 	//Reset parameters tracking numbers and operators.
 	params.Decimal = false;
@@ -76,7 +146,7 @@ void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI:
 	ScreenText->Text = "0";
 }
 
-
+//This function calculates the result of the inputs given by the user and displays the result.
 void TheCalculator::MainPage::DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
  	double result = RunCalculations(params);

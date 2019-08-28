@@ -17,14 +17,13 @@ int Calculator::FindEndIndex(std::vector<Platform::String^> Tokens, int StartInd
 	int EmbeddedOpenBrackets = 0;
 	int EndIndex = StartIndex;
 
-	//If we find an open bracket we track its index and start looking 
-		//for a matching close bracket. If more open brackets occur while
-		//searching for a closed bracket then these must be closed before
-		//the open bracket of interest can be closed. Therefore embedded
-		//brackets are checked for. Once a close bracket has been 
-		//found for our open bracket, we track its index and pass this
-		// along with the open bracket index and the Tokens array to 
-		//EvaluateBracketedExpression 
+	//If we find an embedded open bracket before we find the closed bracket, we increment
+	//a counter. If we find a closed bracket while there are embedded open brackets we 
+	//decrement this counter. If the counter is zero and we find a closed bracket we know
+	//it closes the open bracket we are interested in and we pass its index to the caller.
+	//Note that this function assumes all open brackets have been closed and therefore 
+	//the CloseBrackets() function needs to have been called on the Tokens vector
+	//prior to calling this function.
 
 	for (int j = (StartIndex+1); j < Tokens.size(); j++) {
 		if (Tokens[j] == "(") {
@@ -69,20 +68,21 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 		}
 	}
 
-	//Loop over each element in the bracket and check whether it is a unary operator or a binary operator. 
+
+
 	for (int i = 1; i < Tokens.size(); i++) {
 		if (parser.IsUnaryOperator(Tokens[i])) {
-			Tokens[i] = EvaluateUnaryOperation(Tokens[i], Tokens[i+1], Unit);
+			Tokens[i] = EvaluateUnaryOperation(Tokens[i], Tokens[i + 1], Unit);
 			//Erase the element at address j+1 from params.Tokens.
 			Tokens.erase(Tokens.begin() + i + 1);
 			i = 1;
 		}
 		else if (parser.IsBinaryOperator(Tokens[i])) {
 			Tokens[i - 1] = EvaluateBinaryOperation(Tokens[i - 1], Tokens[i + 1],
-		        Tokens[i]);
+				Tokens[i]);
 			//Erase the elements at addresses j+1 and j from params.Tokens.
 			Tokens.erase(Tokens.begin() + i + 1);
-		    Tokens.erase(Tokens.begin() + i);
+			Tokens.erase(Tokens.begin() + i);
 			i = 1;
 		}
 		else if (i == Tokens.size() - 1) {
@@ -91,7 +91,7 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 			i = 1;
 		}
 	}
-	return Tokens[0];
+	return Tokens[0]; 
 }
 
 
@@ -100,7 +100,7 @@ Platform::String^ Calculator::EvaluateUnaryOperation(Platform::String^ UnaryOper
 
 	double result;
 	double Number = _wtof(StringNumber->Data());
-	double UnitConversion;
+	double UnitConversion; //Used for converting between radians and degrees if necessary.
 	if (Unit == Degrees) {
 		UnitConversion = 180 / M_PI;
 	}
