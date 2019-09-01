@@ -6,6 +6,7 @@
 
 constexpr auto M_PI = 3.1415926535;
 constexpr auto M_E = 2.7182818284; //e to 10 decimal places
+constexpr auto DIVIDE_BY_ZERO_ERROR = DBL
 
 Calculator::Calculator() {
 
@@ -79,7 +80,11 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 		}
 		else if (parser.IsBinaryOperator(Tokens[i])) {
 			Tokens[i - 1] = EvaluateBinaryOperation(Tokens[i - 1], Tokens[i + 1],
-				Tokens[i]);
+					Tokens[i]);
+			if (Tokens[i - 1] == DIVIDE_BY_ZERO_ERROR.ToString()) {
+				return Tokens[i - 1];
+			}
+				Tokens[i]); 
 			//Erase the elements at addresses j+1 and j from params.Tokens.
 			Tokens.erase(Tokens.begin() + i + 1);
 			Tokens.erase(Tokens.begin() + i);
@@ -173,7 +178,12 @@ Platform::String^ Calculator::EvaluateBinaryOperation(Platform::String^ StringFi
 		result = FirstNumber * SecondNumber;
 	}
 	else if (BinaryOperator == "÷") {
-		result = FirstNumber / SecondNumber;
+		if (SecondNumber == 0) {
+			result = DIVIDE_BY_ZERO_ERROR;
+		}
+		else {
+			result = FirstNumber / SecondNumber;
+		}
 	}
 	else if (BinaryOperator == "Exp") {
 		result = FirstNumber * pow(10, SecondNumber);

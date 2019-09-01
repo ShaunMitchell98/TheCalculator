@@ -1,7 +1,6 @@
 ﻿#include "TokenParser.h"
 #include "App.xaml.h"
-
-
+#include <string>
 #define M_PI 3.14159265359
 #define M_E 2.7182818284 //e to 10 decimal places
 
@@ -38,7 +37,7 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 			//to avoid attempting to access a non-existent element
 			//of Tokens in the next statement.
 			if (params.Tokens.back() != ")") {
-				params.Tokens.push_back(params.CurrentNumber.ToString());
+				params.Tokens.push_back(params.CurrentNumber);
 				params = ResetNumberParams(params);
 			}
 		}
@@ -46,7 +45,7 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 		//in CurrentNumber that needs to be pushed to it. By default
 		//this number is 0, the number displayed when the app is loaded.
 		else if (params.Tokens.size() == 0) {
-			params.Tokens.push_back(params.CurrentNumber.ToString());
+			params.Tokens.push_back(params.CurrentNumber);
 			params = ResetNumberParams(params);
 		}
 		params.Tokens.push_back(ClickedText);
@@ -65,7 +64,7 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 			params.Tokens.push_back("(");
 		}
 		else {
-			params.Tokens.push_back(params.CurrentNumber.ToString());
+			params.Tokens.push_back(params.CurrentNumber);
 			params = ResetNumberParams(params);
 			params.Tokens.push_back(ClickedText);
 		}
@@ -77,49 +76,32 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 
 	//If the user clicks a number the parser converts the number clicked
 	//into an internally stored number it can use for arithmetic.
-	else if (IsInt(ClickedText)) {
+	else if (IsInt(ClickedText) || ClickedText == L".") {
 		params = ParseDigit(ClickedText, params);
 	}
 
-	//If the user clicks "." then we know the CurrentNumber is a decimal number.
-	else if (ClickedText == L".") {
-		
-		//By setting Decimal to true, we change the behaviour of ParseDigit on digits
-		//that follow the decimal point, multiplying them by fractions of ten rather
-		//than multiples of it.
-		params.Decimal = true; 
-		params.Multiplier = 0.1;
-	}
 
 	else if (ClickedText == L"π") {
-		params.CurrentNumber = M_PI;
+		params.CurrentNumber = M_PI.ToString();
 	}
 
 	return params;
 }
 
+
 CalculatorParams TokenParser::ParseDigit(Platform::String^ Digit, CalculatorParams params) {
-
-	//Convert string type digit into an int.
-	int CurrentDigit = _wtoi(Digit->Data());
-
-	if (!params.Decimal) {
-		params.CurrentNumber = params.CurrentNumber * 10;
-		params.CurrentNumber = params.CurrentNumber + CurrentDigit;
+	if (params.CurrentNumber == DefaultNumber.ToString()) {
+		params.CurrentNumber = Digit;
 	}
-
-	else if (params.Decimal) {
-		params.CurrentNumber = params.CurrentNumber + (CurrentDigit * params.Multiplier);
-		params.Multiplier = params.Multiplier * 0.1;
+	else {
+		params.CurrentNumber = params.CurrentNumber + Digit;
 	}
 	return params;
 }
 
 CalculatorParams TokenParser::ResetNumberParams(CalculatorParams params) {
 
-	params.CurrentNumber = 0;
-	params.Decimal = false;
-	params.Multiplier = 1.0;
+	params.CurrentNumber = DefaultNumber.ToString();
 	return params;
 }
 

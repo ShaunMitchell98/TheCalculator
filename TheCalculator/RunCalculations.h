@@ -6,6 +6,7 @@
 #include <vector>
 #include <iterator>
 
+constexpr auto DIVIDE_BY_ZERO_ERROR = DBL_MAX;
 
 double RunCalculations(CalculatorParams params)
 {
@@ -17,8 +18,8 @@ double RunCalculations(CalculatorParams params)
 
 	//If no operators followed the last number typed, it will still be stored
 	//in CurrentNumber, it needs to be pushed to Tokens.
-	if (params.CurrentNumber != 0) {
-		params.Tokens.push_back(params.CurrentNumber.ToString());
+	if (params.CurrentNumber != DefaultNumber.ToString()) {
+		params.Tokens.push_back(params.CurrentNumber);
 		params = parser.ResetNumberParams(params);
 	}
 
@@ -41,9 +42,8 @@ double RunCalculations(CalculatorParams params)
 		if (params.Tokens[i] == "(") {
 			int StartIndex = i;
 			int EndIndex = calculator.FindEndIndex(params.Tokens, StartIndex);
-			std::vector<Platform::String^> BracketedExpression(params.Tokens.begin() + 
+			std::vector<Platform::String^> BracketedExpression(params.Tokens.begin() +
 				StartIndex, params.Tokens.begin() + EndIndex + 1);
-			
 			//Remove bracketed expression from Tokens.
 			for (int i = EndIndex; i >= StartIndex; i--) {
 				params.Tokens.erase(params.Tokens.begin() + i);
@@ -51,10 +51,13 @@ double RunCalculations(CalculatorParams params)
 
 			//Place result of bracketed expression where the bracketed expression
 			//used to be.
-			params.Tokens.emplace(params.Tokens.begin() + StartIndex, 
+			params.Tokens.emplace(params.Tokens.begin() + StartIndex,
 				calculator.EvaluateBracketedExpression(BracketedExpression, params.Unit));
 			i = 0;
+			if (params.Tokens[StartIndex] == DIVIDE_BY_ZERO_ERROR.ToString()) {
+				return _wtof(params.Tokens[StartIndex]->Data());
 			}
+		}
 	}
 
 	//Check Tokens for Unary operations and perform them.
@@ -86,6 +89,9 @@ double RunCalculations(CalculatorParams params)
 		if (params.Tokens[i] == "X" || params.Tokens[i] == "÷") {
 			params.Tokens[i - 1] = calculator.EvaluateBinaryOperation(params.Tokens[i - 1],
 				params.Tokens[i + 1], params.Tokens[i]);
+			if (params.Tokens[i - 1] == DIVIDE_BY_ZERO_ERROR.ToString()) {
+				return _wtof(params.Tokens[i - 1]->Data());
+			}
 			params.Tokens.erase(params.Tokens.begin() + i + 1);
 			params.Tokens.erase(params.Tokens.begin() + i);
 			i = 0;
@@ -93,8 +99,11 @@ double RunCalculations(CalculatorParams params)
 	}
 	for (int i = 0; i < params.Tokens.size(); i++) {
 		if (parser.IsBinaryOperator(params.Tokens[i])) {
-		    params.Tokens[i-1] = calculator.EvaluateBinaryOperation(params.Tokens[i-1], 
-				params.Tokens[i+1], params.Tokens[i]);
+			params.Tokens[i - 1] = calculator.EvaluateBinaryOperation(params.Tokens[i - 1],
+				params.Tokens[i + 1], params.Tokens[i]);
+			if (params.Tokens[i + 1] == DIVIDE_BY_ZERO_ERROR.ToString()) {
+				return _wtof(params.Tokens[i+1]->Data());
+			}
 			params.Tokens.erase(params.Tokens.begin() + i + 1);
 			params.Tokens.erase(params.Tokens.begin() + i);
 			i = 0;

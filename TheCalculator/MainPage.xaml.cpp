@@ -136,12 +136,9 @@ void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEve
 //the user clicks C.
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	params.CurrentNumber = 0;
-    params.Tokens.clear();
+	params.CurrentNumber = DefaultNumber.ToString();
+  params.Tokens.clear();
 
-	//Reset parameters tracking numbers and operators.
-	params.Decimal = false;
-	params.Multiplier = 1.0;
 	params.DisplayOutput = "0";
 	ScreenText->Text = "0";
 }
@@ -150,5 +147,10 @@ void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI:
 void TheCalculator::MainPage::DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
  	double result = RunCalculations(params);
-	ScreenText->Text = result.ToString();
+	if (result == 1.79769E+308) {
+		ScreenText->Text = "Division by zero error!";
+	}
+	else {
+		ScreenText->Text = result.ToString();
+	}
 }
