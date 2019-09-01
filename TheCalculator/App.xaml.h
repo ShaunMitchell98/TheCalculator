@@ -5,8 +5,7 @@
 
 #pragma once
 
-#include "App.g.h"
-
+#include "..\TheCalculator\Generated Files\App.g.h"
 namespace TheCalculator
 {
 	/// <summary>

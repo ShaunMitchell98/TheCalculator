@@ -137,9 +137,8 @@ void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEve
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	params.CurrentNumber = DefaultNumber.ToString();
-    params.Tokens.clear();
+  params.Tokens.clear();
 
-	//Reset parameters tracking numbers and operators.
 	params.DisplayOutput = "0";
 	ScreenText->Text = "0";
 }

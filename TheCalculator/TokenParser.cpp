@@ -1,7 +1,6 @@
 ﻿#include "TokenParser.h"
 #include "App.xaml.h"
 #include <string>
-
 #define M_PI 3.14159265359
 #define M_E 2.7182818284 //e to 10 decimal places
 

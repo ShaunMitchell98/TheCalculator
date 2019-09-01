@@ -44,7 +44,6 @@ double RunCalculations(CalculatorParams params)
 			int EndIndex = calculator.FindEndIndex(params.Tokens, StartIndex);
 			std::vector<Platform::String^> BracketedExpression(params.Tokens.begin() +
 				StartIndex, params.Tokens.begin() + EndIndex + 1);
-
 			//Remove bracketed expression from Tokens.
 			for (int i = EndIndex; i >= StartIndex; i--) {
 				params.Tokens.erase(params.Tokens.begin() + i);
