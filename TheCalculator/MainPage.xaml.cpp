@@ -107,6 +107,14 @@ Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::Stri
 	else if (ClickedText == L"yvx") {
 		Input = Input + "v";
 	}
+	else if (ClickedText == L"Mod") {
+		if (Input == "0") {
+			Input = "|";
+		}
+		else {
+			Input = Input + "|";
+		}
+	}
 	else {
 		if (Input == "0") {
 			Input = ClickedText;
@@ -140,19 +148,15 @@ void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEve
 //the user clicks C.
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	params.CurrentNumber = DefaultNumber.ToString();
     params.Tokens.clear();
 
 	//Reset parameters tracking numbers and operators.
+	params.EditingNumber = false;
 	params.DisplayOutput = "0";
 	ScreenText->Text = "0";
 }
 
 void TheCalculator::MainPage::DeleteToken(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e) {
-	if (params.CurrentNumber != DefaultNumber.ToString()) {
-		params.Tokens.push_back(params.CurrentNumber);
-		params = parser.ResetNumberParams(params);
-	}
 	int finalTokenLength = params.Tokens.back()->Length();
 	params.Tokens.pop_back();
 	std::wstring output = params.DisplayOutput->Data();

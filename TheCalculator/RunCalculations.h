@@ -16,17 +16,11 @@ double RunCalculations(CalculatorParams params)
 	//This will store the result of the calculations.
 	double result = 0.0;
 
-	//If no operators followed the last number typed, it will still be stored
-	//in CurrentNumber, it needs to be pushed to Tokens.
-	if (params.CurrentNumber != DefaultNumber.ToString()) {
-		params.Tokens.push_back(params.CurrentNumber);
-		params = parser.ResetNumberParams(params);
-	}
-
 	//If there is only a single token, we assume it is a number and return
 	//it as the result.
 	if (params.Tokens.size() == 1) {
 		result = _wtof(params.Tokens[0]->Data());
+		return result;
 	}
 
 	//Check for any unclosed brackets. If any are found, closed brackets
