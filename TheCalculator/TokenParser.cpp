@@ -37,7 +37,7 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 			//Note that the check on Token size above is necessary
 			//to avoid attempting to access a non-existent element
 			//of Tokens in the next statement.
-			if (params.Tokens.back() != ")") {
+			if (params.Tokens.back() != ")" && params.CurrentNumber != DefaultNumber.ToString()) {
 				params.Tokens.push_back(params.CurrentNumber);
 				params = ResetNumberParams(params);
 			}
@@ -60,7 +60,8 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 		//their input so have no need for an open bracket to 
 		//follow them.
 		if (ClickedText != L"x²" && ClickedText != L"x³" &&
-			ClickedText != L"xʸ" && ClickedText != L"n!") {
+			ClickedText != L"xʸ" && ClickedText != L"n!" 
+			&& ClickedText != L"%") {
 			params.Tokens.push_back(ClickedText);
 			params.Tokens.push_back("(");
 		}
@@ -91,6 +92,11 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 
 
 	else if (ClickedText == L"π") {
+		if (params.CurrentNumber != DefaultNumber.ToString()) {
+			params.Tokens.push_back(params.CurrentNumber);
+			params = ResetNumberParams(params);
+			params.Tokens.push_back("X");
+		}
 		params.CurrentNumber = M_PI.ToString();
 	}
 
@@ -131,7 +137,7 @@ bool TokenParser::IsBinaryOperator(Platform::String^ ClickedText) {
 	bool IsBinaryOperator;
 	if (ClickedText == "+" || ClickedText == "-" || ClickedText == "X" ||
 		ClickedText == "÷" || ClickedText == "Exp" || 
-		ClickedText == L"xʸ") {
+		ClickedText == L"xʸ" || ClickedText == L"yvx") {
 		IsBinaryOperator = true;
 	}
 	else {
@@ -146,7 +152,7 @@ bool TokenParser::IsUnaryOperator(Platform::String^ ClickedText) {
 		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹"
 		|| ClickedText == L"x²" || ClickedText == L"10ˣ" || ClickedText == L"log" || ClickedText == L"eˣ"
 		|| ClickedText == L"x³" || ClickedText == L"ln" || ClickedText == L"√"
-		|| ClickedText == L"1/x" || ClickedText == L"n!") {
+		|| ClickedText == L"1/x" || ClickedText == L"n!" || ClickedText == L"%") {
 		IsUnaryOperator = true;
 	}
 	else {

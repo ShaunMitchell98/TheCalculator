@@ -6,7 +6,7 @@
 
 constexpr auto M_PI = 3.1415926535;
 constexpr auto M_E = 2.7182818284; //e to 10 decimal places
-constexpr auto DIVIDE_BY_ZERO_ERROR = DBL
+constexpr auto DIVIDE_BY_ZERO_ERROR = DBL_MAX;
 
 Calculator::Calculator() {
 
@@ -73,29 +73,53 @@ Platform::String^ Calculator::EvaluateBracketedExpression(std::vector<Platform::
 
 	for (int i = 1; i < Tokens.size(); i++) {
 		if (parser.IsUnaryOperator(Tokens[i])) {
-			Tokens[i] = EvaluateUnaryOperation(Tokens[i], Tokens[i + 1], Unit);
-			//Erase the element at address j+1 from params.Tokens.
-			Tokens.erase(Tokens.begin() + i + 1);
-			i = 1;
+			//For these five unary operations, the operators follow their operands, for all
+			//other operations, the operator precedes the operand.
+			if (Tokens[i] == L"x²" || Tokens[i] == L"x³" ||
+				Tokens[i] == L"xʸ" || Tokens[i] == L"n!" || Tokens[i] == L"%") {
+				Tokens[i - 1] = EvaluateUnaryOperation(Tokens[i], Tokens[i - 1], Unit);
+				Tokens.erase(Tokens.begin() + i);
+				//This line restarts the loop from the beginning of tokens. This
+				//may be needed if index changes executed by 
+				//EvaluateUnaryOperation mess up the indexing here.
+				i = 0;
+			}
+			else {
+				Tokens[i] = EvaluateUnaryOperation(Tokens[i],
+					Tokens[i + 1], Unit);
+				Tokens.erase(Tokens.begin() + i + 1);
+				i = 0;
+			}
 		}
-		else if (parser.IsBinaryOperator(Tokens[i])) {
+	}
+	for (int i = 1; i < Tokens.size(); i++) {
+		if (Tokens[i] == "X" || Tokens[i] == "÷") {
 			Tokens[i - 1] = EvaluateBinaryOperation(Tokens[i - 1], Tokens[i + 1],
-					Tokens[i]);
+				Tokens[i]);
 			if (Tokens[i - 1] == DIVIDE_BY_ZERO_ERROR.ToString()) {
 				return Tokens[i - 1];
 			}
-				Tokens[i]); 
 			//Erase the elements at addresses j+1 and j from params.Tokens.
 			Tokens.erase(Tokens.begin() + i + 1);
 			Tokens.erase(Tokens.begin() + i);
 			i = 1;
 		}
-		else if (i == Tokens.size() - 1) {
-			Tokens.erase(Tokens.begin() + Tokens.size() - 1);
-			Tokens.erase(Tokens.begin());
+	}
+	for (int i = 1; i < Tokens.size(); i++) {
+		if (parser.IsBinaryOperator(Tokens[i])) {
+			Tokens[i - 1] = EvaluateBinaryOperation(Tokens[i - 1], Tokens[i + 1],
+				Tokens[i]);
+			if (Tokens[i - 1] == DIVIDE_BY_ZERO_ERROR.ToString()) {
+				return Tokens[i - 1];
+			}
+			//Erase the elements at addresses j+1 and j from params.Tokens.
+			Tokens.erase(Tokens.begin() + i + 1);
+			Tokens.erase(Tokens.begin() + i);
 			i = 1;
 		}
 	}
+	Tokens.erase(Tokens.begin() + Tokens.size() - 1);
+	Tokens.erase(Tokens.begin());
 	return Tokens[0]; 
 }
 
@@ -157,6 +181,9 @@ Platform::String^ Calculator::EvaluateUnaryOperation(Platform::String^ UnaryOper
 	else if (UnaryOperator == L"1/x") {
 		result = 1 / Number;
 	}
+	else if (UnaryOperator == L"%") {
+		result = Number / 100;
+	}
 	Platform::String^ StringResult = result.ToString();
 	return StringResult;
 }
@@ -190,6 +217,9 @@ Platform::String^ Calculator::EvaluateBinaryOperation(Platform::String^ StringFi
 	}
 	else if (BinaryOperator == L"xʸ") {
 		result = pow(FirstNumber, SecondNumber);
+	}
+	else if (BinaryOperator == L"yvx") {
+		result = pow(SecondNumber, 1 / (FirstNumber));
 	}
 	Platform::String^ StringResult = result.ToString();
 	return StringResult;

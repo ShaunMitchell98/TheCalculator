@@ -9,6 +9,7 @@
 #include "MainPage.xaml.h"
 #include <cmath>
 #include "RunCalculations.h"
+#include <string>
 
 using namespace TheCalculator;
 
@@ -64,7 +65,7 @@ Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::Stri
 	}
 	else if (ClickedText == L"10ˣ") {
 		if (Input == "0") {
-			Input = L"10^";
+			Input = L"10^(";
 		}
 		else {
 			Input = Input + L"10^";
@@ -72,10 +73,10 @@ Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::Stri
 	}
 	else if (ClickedText == L"eˣ") {
 		if (Input == "0") {
-			Input = L"e^";
+			Input = L"e^(";
 		}
 		else {
-			Input = Input + L"e^";
+			Input = Input + L"e^(";
 		}
 	}
 	else if (ClickedText == L"x³") {
@@ -83,10 +84,10 @@ Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::Stri
 	}
 	else if (ClickedText == L"1/x") {
 		if (Input == "0") {
-			Input = "1/";
+			Input = "1/(";
 		}
 		else {
-			Input = Input + "1/";
+			Input = Input + "1/(";
 		}
 	}
 	else if (ClickedText == "n!") {
@@ -102,6 +103,9 @@ Platform::String^ MainPage::DisplayToken(Platform::String^ Input, Platform::Stri
 	}
 	else if (ClickedText == L"xʸ") {
 		Input = Input + "^";
+	}
+	else if (ClickedText == L"yvx") {
+		Input = Input + "v";
 	}
 	else {
 		if (Input == "0") {
@@ -137,12 +141,25 @@ void MainPage::ToggleUnit(Platform::Object^ sender, Windows::UI::Xaml::RoutedEve
 void TheCalculator::MainPage::ResetParams(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	params.CurrentNumber = DefaultNumber.ToString();
-  params.Tokens.clear();
+    params.Tokens.clear();
 
+	//Reset parameters tracking numbers and operators.
 	params.DisplayOutput = "0";
 	ScreenText->Text = "0";
 }
 
+void TheCalculator::MainPage::DeleteToken(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e) {
+	if (params.CurrentNumber != DefaultNumber.ToString()) {
+		params.Tokens.push_back(params.CurrentNumber);
+		params = parser.ResetNumberParams(params);
+	}
+	int finalTokenLength = params.Tokens.back()->Length();
+	params.Tokens.pop_back();
+	std::wstring output = params.DisplayOutput->Data();
+	output = output.substr(0, params.DisplayOutput->Length() - finalTokenLength);
+	params.DisplayOutput = ref new Platform::String(output.c_str());
+	ScreenText->Text = params.DisplayOutput;
+}
 //This function calculates the result of the inputs given by the user and displays the result.
 void TheCalculator::MainPage::DisplayResult(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {

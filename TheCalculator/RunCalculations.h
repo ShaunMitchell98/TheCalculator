@@ -44,6 +44,7 @@ double RunCalculations(CalculatorParams params)
 			int EndIndex = calculator.FindEndIndex(params.Tokens, StartIndex);
 			std::vector<Platform::String^> BracketedExpression(params.Tokens.begin() +
 				StartIndex, params.Tokens.begin() + EndIndex + 1);
+
 			//Remove bracketed expression from Tokens.
 			for (int i = EndIndex; i >= StartIndex; i--) {
 				params.Tokens.erase(params.Tokens.begin() + i);
@@ -66,7 +67,8 @@ double RunCalculations(CalculatorParams params)
 			//For these four unary operations, the operators follow their operands, for all
 			//other operations, the operator precedes the operand.
 			if (params.Tokens[i] == L"x²" || params.Tokens[i] == L"x³" || 
-				params.Tokens[i] == L"xʸ" || params.Tokens[i] == L"n!") {
+				params.Tokens[i] == L"xʸ" || params.Tokens[i] == L"n!" ||
+				params.Tokens[i] == L"%") {
 				params.Tokens[i-1] = calculator.EvaluateUnaryOperation(params.Tokens[i], params.Tokens[i-1], params.Unit);
 				params.Tokens.erase(params.Tokens.begin() + i);
 				//This line restarts the loop from the beginning of tokens. This
