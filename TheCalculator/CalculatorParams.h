@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#define DefaultNumber DBL_MAX
 
 enum AngleUnit {
 	Degrees,
@@ -8,7 +7,8 @@ enum AngleUnit {
 };
 
 struct CalculatorParams {
-	Platform::String^ CurrentNumber = DefaultNumber.ToString();
+	bool EditingNumber = false;
+	bool Mod = false;
 	Platform::String^ DisplayOutput = "0";
 	std::vector<Platform::String^> Tokens;
 	AngleUnit Unit = Radians;

@@ -33,26 +33,22 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 	//operator is pushed.
 	
 	if (IsBinaryOperator(ClickedText)) {
-		if (params.Tokens.size() != 0) {
+		if ((params.EditingNumber == false) && (params.Tokens.back() != L")") &&
+			ClickedText == "-") {
+			params.EditingNumber = true;
+		}
+		else if (params.Tokens.size() != 0) {
 			//Note that the check on Token size above is necessary
 			//to avoid attempting to access a non-existent element
 			//of Tokens in the next statement.
-			if (params.Tokens.back() != ")" && params.CurrentNumber != DefaultNumber.ToString()) {
-				params.Tokens.push_back(params.CurrentNumber);
-				params = ResetNumberParams(params);
+			if (params.Tokens.back() != ")" && params.EditingNumber == true) {
+				params.EditingNumber = false;
 			}
-		}
-		//If the Tokens size is zero then we assume there is a number
-		//in CurrentNumber that needs to be pushed to it. By default
-		//this number is 0, the number displayed when the app is loaded.
-		else if (params.Tokens.size() == 0) {
-			params.Tokens.push_back(params.CurrentNumber);
-			params = ResetNumberParams(params);
 		}
 		params.Tokens.push_back(ClickedText);
 	}
 
-	else if (IsUnaryOperator(ClickedText)) {
+	else if (IsUnaryOperator(ClickedText) && ClickedText != L"Mod") {
 
 		//Unary operators that precede their numerical input
 		//should be given a bracket to account for an expression
@@ -66,8 +62,7 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 			params.Tokens.push_back("(");
 		}
 		else {
-			params.Tokens.push_back(params.CurrentNumber);
-			params = ResetNumberParams(params);
+			params.EditingNumber = false;
 			params.Tokens.push_back(ClickedText);
 		}
 	}
@@ -77,11 +72,21 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 	}
 
 	else if (ClickedText == L")") {
-		if (params.CurrentNumber != DefaultNumber.ToString()) {
-			params.Tokens.push_back(params.CurrentNumber);
-			params = ResetNumberParams(params);
+		if (params.EditingNumber == true) {
+			params.EditingNumber = false;
 		}
 		params.Tokens.push_back(ClickedText);
+	}
+	else if (ClickedText == L"Mod") {
+		if (params.Mod == false) {
+			params.Mod = true;
+			params.Tokens.push_back(L"Mod");
+			params.Tokens.push_back(L"(");
+		}
+		else if (params.Mod == true) {
+			params.Mod = false;
+			params.Tokens.push_back(L")");
+		}
 	}
 
 	//If the user clicks a number the parser converts the number clicked
@@ -92,12 +97,11 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 
 
 	else if (ClickedText == L"π") {
-		if (params.CurrentNumber != DefaultNumber.ToString()) {
-			params.Tokens.push_back(params.CurrentNumber);
-			params = ResetNumberParams(params);
+		if (params.EditingNumber == true) {
+			params.EditingNumber = false;
 			params.Tokens.push_back("X");
 		}
-		params.CurrentNumber = M_PI.ToString();
+		params.Tokens.push_back(M_PI.ToString());
 	}
 
 	return params;
@@ -105,18 +109,14 @@ CalculatorParams TokenParser::ParseToken(Platform::String^ ClickedText, Calculat
 
 
 CalculatorParams TokenParser::ParseDigit(Platform::String^ Digit, CalculatorParams params) {
-	if (params.CurrentNumber == DefaultNumber.ToString()) {
-		params.CurrentNumber = Digit;
+
+	if (params.EditingNumber == false) {
+		params.Tokens.push_back(Digit);
+		params.EditingNumber = true;
 	}
 	else {
-		params.CurrentNumber = params.CurrentNumber + Digit;
+		params.Tokens.back() = params.Tokens.back() + Digit;
 	}
-	return params;
-}
-
-CalculatorParams TokenParser::ResetNumberParams(CalculatorParams params) {
-
-	params.CurrentNumber = DefaultNumber.ToString();
 	return params;
 }
 
@@ -152,7 +152,7 @@ bool TokenParser::IsUnaryOperator(Platform::String^ ClickedText) {
 		|| ClickedText == L"sin⁻¹" || ClickedText == L"cos⁻¹" || ClickedText == L"tan⁻¹"
 		|| ClickedText == L"x²" || ClickedText == L"10ˣ" || ClickedText == L"log" || ClickedText == L"eˣ"
 		|| ClickedText == L"x³" || ClickedText == L"ln" || ClickedText == L"√"
-		|| ClickedText == L"1/x" || ClickedText == L"n!" || ClickedText == L"%") {
+		|| ClickedText == L"1/x" || ClickedText == L"n!" || ClickedText == L"%" || ClickedText == L"Mod") {
 		IsUnaryOperator = true;
 	}
 	else {

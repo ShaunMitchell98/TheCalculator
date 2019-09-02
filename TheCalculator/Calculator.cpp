@@ -184,6 +184,12 @@ Platform::String^ Calculator::EvaluateUnaryOperation(Platform::String^ UnaryOper
 	else if (UnaryOperator == L"%") {
 		result = Number / 100;
 	}
+	else if (UnaryOperator == L"Mod") {
+		result = Number;
+		if (Number < 0) {
+			result = -Number;
+		}
+	}
 	Platform::String^ StringResult = result.ToString();
 	return StringResult;
 }
