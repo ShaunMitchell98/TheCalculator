@@ -14,3 +14,4 @@ For example:
 
 I found this to be unnatural so in my implementation I chose to put the operator before its input:
 
+![TheCalculator logarithm](https://github.com/ShaunMitchell98/TheCalculator/blob/master/images/TheCalculator%20log.gif)
