@@ -4,6 +4,7 @@ A scientific calculator, written in C++ using Windows Presentation Foundation fo
 calculator app that comes with Windows 10.
 
 ![Application picture](https://github.com/ShaunMitchell98/TheCalculator/blob/master/images/Application%20Picture.png)
+![Windows application](https://github.com/ShaunMitchell98/TheCalculator/blob/master/images/Windows%20Calculator%20Picture.png)
 
 I originally intended to attempt to clone this app, but in the process decided to make some changes. One such change is that I removed some buttons whose purpose was unclear or beyond the scope of the app such as the up arrow in the bottom left corner of the Windows app and the dms button.
 
